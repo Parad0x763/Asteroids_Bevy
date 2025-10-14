@@ -10,3 +10,8 @@
 ### ECS Quick Start
 
 - [Quick-Start/ECS](https://bevy.org/learn/quick-start/getting-started/ecs/)
+
+## Bevy's Default Plugins
+
+- `DefaultPlugins` are a `PluginGroup` containing core engine features like 2D / 3D renderer, asset loading, UI System, Windows, and input
+  - Using this adds an "event loop" that runs once per frame
