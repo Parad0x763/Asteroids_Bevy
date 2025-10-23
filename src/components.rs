@@ -1,7 +1,12 @@
-use bevy::prelude::*;
+use bevy::{prelude::*};
 
-#[derive(Debug, Component, Clone, Copy, PartialEq, Default, /*Deref, DerefMut*/)]
-pub struct Player;
+#[derive(Debug, Component)]
+pub struct Player {
+    /// Linear speed in meters per second
+    pub movement_speed: f32,
+    /// Rotation speed in radians per second
+    pub rotation_speed: f32,
+}
 
 #[derive(Debug, Component, Clone, Copy, PartialEq, Default, /*Deref, DerefMut*/)]
 pub struct Asteroid;
@@ -14,14 +19,32 @@ pub struct Collider;
 
 #[derive(Debug, Component, Clone, Copy, PartialEq, Default, /*Deref, DerefMut*/)]
 pub struct Position {
-    x: f32,
-    y: f32,
-    z: f32,
+    pub x: f32,
+    pub y: f32,
+    pub z: f32,
 }
 
 #[derive(Debug, Component, Clone, Copy, PartialEq, Default, /*Deref, DerefMut*/)]
-pub struct Velocity {
-    x: f32,
-    y: f32,
-    z: f32,
+pub struct Velocity(pub Vec3);
+
+/// The actual position of the player in the physics simulation.
+/// This is separate from the `Transform`, which is merely a visual representation.
+///
+/// If you want to make sure that this component is always initialized
+/// with the same value as the `Transform`'s translation, you can
+/// use a [component lifecycle hook](https://docs.rs/bevy/0.14.0/bevy/ecs/component/struct.ComponentHooks.html)
+#[derive(Debug, Component, Clone, Copy, PartialEq, Default, Deref, DerefMut)]
+pub struct PhysicalTranslation(pub Vec3);
+
+/// The value [`PhysicalTranslation`] had in the last fixed timestep.
+/// Used for interpolation in the `interpolate_rendered_transform` system.
+#[derive(Debug, Component, Clone, Copy, PartialEq, Default, Deref, DerefMut)]
+pub struct PreviousPhysicalTranslation(pub Vec3);
+
+#[derive(Debug, Component, Clone, Copy, PartialEq, Default, Deref, DerefMut)]
+pub struct AccumulatedInput {
+    pub movement: Vec2,
 }
+
+#[derive(Resource, Debug, Deref, DerefMut, Default)]
+pub struct DidFixedTimestepRunThisFrame(pub bool);
