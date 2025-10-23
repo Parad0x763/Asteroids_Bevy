@@ -10,7 +10,7 @@ fn main() {
                 primary_window: Some(Window{
                     title: "Asteroids".into(),
                     name: Some("bevy.app".into()),
-                    resolution: (2560, 1440).into(), // older versions of Bevy used f32, now u32 is used
+                    resolution: (1280, 720).into(), // older versions of Bevy used f32, now u32 is used
                     ..default()
                 }),
                 ..default()}),
@@ -20,7 +20,12 @@ fn main() {
 }
 
 fn setup(
-    mut commands: Commands
+    mut commands: Commands,
+    asset_server: Res<AssetServer>,
 ) {
     commands.spawn(Camera2d);
+
+    commands.spawn(Sprite::from_image(
+        asset_server.load("ship/ship.png")
+    ));
 }
