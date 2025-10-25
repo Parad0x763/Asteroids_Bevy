@@ -1,8 +1,14 @@
 use bevy::{color::palettes::tailwind, prelude::*};
 
+use bevy_rand::prelude::{EntropyPlugin, WyRand};
+use rand_core::RngCore;
+
 mod components;
 mod physics;
+mod create_asteroids_plugin;
+use std::time::Duration;
 
+use crate::components::MovementPhysics;
 use crate::components::PhysicalTranslation;
 use crate::components::PreviousPhysicalTranslation;
 use crate::components::Velocity;
@@ -10,11 +16,13 @@ use crate::components::AccumulatedInput;
 use crate::components::Player;
 use crate::components::DidFixedTimestepRunThisFrame;
 use crate::physics::player_movement;
+use crate::create_asteroids_plugin::AsteroidCreatePlugin;
 
 fn main() {
     App::new()
         .insert_resource(ClearColor(Color::srgb(0.05, 0.05, 0.1)))
         .init_resource::<DidFixedTimestepRunThisFrame>()
+        .add_plugins(EntropyPlugin::<WyRand>::default()) // Enables PRNG algorithm
         .add_plugins((
             DefaultPlugins.set(WindowPlugin{
                 primary_window: Some(Window{
@@ -24,6 +32,10 @@ fn main() {
                     ..default()
                 }),
                 ..default()}),
+            AsteroidCreatePlugin {
+                wait_duration: Duration::from_secs(1),
+                message: "Created".to_string(),
+            }
         ))
         .add_systems(Startup, setup)
         .add_systems(PreUpdate, clear_fixed_timestep_flag)
@@ -37,9 +49,10 @@ fn setup(
     asset_server: Res<AssetServer>,
 ) {
     commands.spawn(Camera2d);
-
+    // Spawn the Player
     commands.spawn((
-        Player {
+        Player,
+        MovementPhysics {
             movement_speed: 500.0,                  // Meters per second
             rotation_speed: f32::to_radians(360.0), // Degress per second
         },
