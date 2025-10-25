@@ -1,4 +1,6 @@
 # Asteroids Built in Rust Using Bevy
+TODO: Need to add health the entities
+
 
 - The goal of this project is to create the classic Asteroids game using Rust and to learn the Bevy Game Engine
 
@@ -6,6 +8,13 @@
 
 - [bevy-engine](https://bevy.org/)
 - `cargo add bevy # Adds bevy as a package`
+
+### Examples Used
+
+- [plugin](https://bevy.org/examples/application/plugin/)
+- [physics-in-fixed-timestep](https://bevy.org/examples/movement/physics-in-fixed-timestep/)
+- [2d-rendering/rotation](https://bevy.org/examples/2d-rendering/rotation/)
+- [bevy_rand/Tutorial](https://docs.rs/bevy_rand/latest/bevy_rand/)
 
 ### ECS Quick Start
 

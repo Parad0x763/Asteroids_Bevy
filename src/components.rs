@@ -1,15 +1,18 @@
 use bevy::{prelude::*};
 
 #[derive(Debug, Component)]
-pub struct Player {
+pub struct Player;
+
+#[derive(Debug, Component, Clone, Copy, PartialEq, Default, /*Deref, DerefMut*/)]
+pub struct Asteroid;
+
+#[derive(Debug, Component, Clone, Copy, PartialEq, Default, /*Deref, DerefMut*/)]
+pub struct MovementPhysics {
     /// Linear speed in meters per second
     pub movement_speed: f32,
     /// Rotation speed in radians per second
     pub rotation_speed: f32,
 }
-
-#[derive(Debug, Component, Clone, Copy, PartialEq, Default, /*Deref, DerefMut*/)]
-pub struct Asteroid;
 
 #[derive(Debug, Component, Clone, Copy, PartialEq, Default, /*Deref, DerefMut*/)]
 pub struct Turret;

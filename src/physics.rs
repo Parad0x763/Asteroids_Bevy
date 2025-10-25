@@ -1,5 +1,6 @@
 use bevy::{math::ops, prelude::*};
 
+use crate::components::MovementPhysics;
 use crate::Velocity;
 use crate::AccumulatedInput;
 use crate::Player;
@@ -11,7 +12,7 @@ const MOVEMENT_FACTOR: f32 = 1.0;
 pub fn player_movement(
     time: Res<Time>,
     keyboard_input: Res<ButtonInput<KeyCode>>,
-    player: Single<(&mut Transform, &mut Player), With<Player>>,
+    player: Single<(&mut Transform, &mut MovementPhysics), With<Player>>,
 ) {
    let (mut transform, ship) = player.into_inner();
 
