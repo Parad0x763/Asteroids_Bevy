@@ -43,14 +43,14 @@ pub fn spawn_more_asteroids(
     time: Res<Time>,
     mut rng: Single<&mut WyRand, With<GlobalRng>>
 ) {
-    let movement_speed_rng = rng.gen_range(10.0..1500.0);
-    let rotation_speed_rng = rng.gen_range(0.0..359.0);
+    let movement_speed_rng = rng.random_range(10.0..1500.0);
+    let rotation_speed_rng = rng.random_range(0.0..359.0);
 
-    let transform_x_rng = rng.gen_range(-640.0..640.0);
-    let transform_y_rng = rng.gen_range(-360.0..360.0);
+    let transform_x_rng = rng.random_range(-640.0..640.0);
+    let transform_y_rng = rng.random_range(-360.0..360.0);
 
-    let velocity_x_rng = rng.gen_range(-1000.0..1000.0);
-    let velocity_y_rng = rng.gen_range(-1000.0..1000.0);
+    let velocity_x_rng = rng.random_range(-1000.0..1000.0);
+    let velocity_y_rng = rng.random_range(-1000.0..1000.0);
 
     if state.timer.tick(time.delta()).is_finished() {
         // TODO: Make adjustments to the ranges to make the asteroids more fun to interacte with, they are really fast right now
