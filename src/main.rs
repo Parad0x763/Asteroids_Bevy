@@ -1,7 +1,6 @@
 use bevy::{color::palettes::tailwind, prelude::*};
 
 use bevy_rand::prelude::{EntropyPlugin, WyRand};
-use rand_core::RngCore;
 
 mod components;
 mod physics;
@@ -15,7 +14,7 @@ use crate::components::Velocity;
 use crate::components::AccumulatedInput;
 use crate::components::Player;
 use crate::components::DidFixedTimestepRunThisFrame;
-use crate::physics::player_movement;
+use crate::physics::{adjust_entity_to_bounds, player_movement};
 use crate::create_asteroids_plugin::AsteroidCreatePlugin;
 
 fn main() {
@@ -40,7 +39,7 @@ fn main() {
         .add_systems(Startup, setup)
         .add_systems(PreUpdate, clear_fixed_timestep_flag)
         .add_systems(FixedPreUpdate, set_fixed_time_step_flag)
-        .add_systems(FixedUpdate, player_movement)
+        .add_systems(FixedUpdate, (player_movement, adjust_entity_to_bounds))
         .run();
 }
 

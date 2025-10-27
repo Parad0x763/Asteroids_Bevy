@@ -1,3 +1,5 @@
+use bevy::ecs::query;
+use bevy::ecs::system::IntoResult;
 use bevy::{math::ops, prelude::*};
 
 use crate::components::MovementPhysics;
@@ -42,8 +44,23 @@ pub fn player_movement(
    let translation_delta = movement_direction * movement_distance;
    // Update the ship translation with our new translation delta
    transform.translation += translation_delta;
+}
 
-   // Bound the ship within the invisible level bounds
-   let extents = Vec3::from((BOUNDS / 2.0, 0.0));
-   transform.translation = transform.translation.min(extents).max(-extents);
+pub fn adjust_entity_to_bounds(
+     mut query: Query<(&mut Transform, &Velocity)>
+) {
+     for (mut transform, _) in &mut query {
+          if transform.translation.x > BOUNDS.x / 2.0 {
+               transform.translation.x -= BOUNDS.x;
+          }
+          if transform.translation.x < -BOUNDS.x / 2.0 {
+               transform.translation.x += BOUNDS.x;
+          }
+          if transform.translation.y > BOUNDS.y / 2.0 {
+               transform.translation.y -= BOUNDS.y;
+          }
+          if transform.translation.y < -BOUNDS.y / 2.0 {
+               transform.translation.y += BOUNDS.y;
+          }
+     }
 }
