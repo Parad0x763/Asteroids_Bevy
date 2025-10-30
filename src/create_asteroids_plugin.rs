@@ -4,7 +4,6 @@ use bevy::prelude::*;
 use bevy_rand::prelude::{WyRand, GlobalRng};
 use core::time::Duration;
 
-
 use crate::components::{Asteroid, Velocity};
 use crate::{PreviousPhysicalTranslation, PhysicalTranslation, MovementPhysics};
 

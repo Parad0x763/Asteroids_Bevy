@@ -6,13 +6,11 @@ mod components;
 mod physics;
 mod create_asteroids_plugin;
 mod handle_turret_plugin;
+mod collision;
 
 use crate::components::{AccumulatedInput, DidFixedTimestepRunThisFrame, HealthComponent, MovementPhysics, PhysicalTranslation, Player, PreviousPhysicalTranslation, Velocity};
-use crate::physics::{adjust_entity_to_bounds, player_movement};
-use crate::create_asteroids_plugin::AsteroidCreatePlugin;
-use crate::handle_turret_plugin::{TurretShotPlugin};
+use crate::{physics::{adjust_entity_to_bounds, player_movement}, create_asteroids_plugin::AsteroidCreatePlugin, handle_turret_plugin::{TurretShotPlugin}, collision::CollisionPlugin};
 
-const PLAYER_HEALTH: f32 = 100.0;
 const PLAYER_SPEED: f32 = 350.0;
 
 fn main() {
@@ -30,9 +28,10 @@ fn main() {
                 }),
                 ..default()}),
             AsteroidCreatePlugin {
-                wait_duration: Duration::from_secs(1),
+                wait_duration: Duration::from_secs(1), //TODO: change this to where the plugin manages the time so that it can change
             },
-            TurretShotPlugin
+            TurretShotPlugin,
+            CollisionPlugin,
         ))
         .add_systems(Startup, setup)
         .add_systems(PreUpdate, clear_fixed_timestep_flag)
@@ -46,16 +45,12 @@ fn setup(
     asset_server: Res<AssetServer>,
 ) {
     commands.spawn(Camera2d);
-    // Spawn the Player
+
     commands.spawn((
         Player,
         MovementPhysics {
             movement_speed: PLAYER_SPEED,               // Meters per second
             rotation_speed: f32::to_radians(360.0),     // Degrees per second
-        },
-        HealthComponent {
-            current_health: PLAYER_HEALTH,
-            max_health: PLAYER_HEALTH,
         },
         Sprite::from_image(asset_server.load("ship/ship.png")),
         Transform::default(),
