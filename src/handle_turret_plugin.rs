@@ -12,7 +12,8 @@ pub struct TurretShotPlugin;
 impl Plugin for TurretShotPlugin {
     fn build(&self, app: &mut App) {
         app
-            .add_systems(FixedUpdate, (spawn_turret_shot, update_shot_movement));
+            .add_systems(Update, spawn_turret_shot)
+            .add_systems(FixedUpdate, update_shot_movement);
     }
 }
 
