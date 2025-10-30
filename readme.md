@@ -24,3 +24,14 @@ TODO: Need to add health the entities
 
 - `DefaultPlugins` are a `PluginGroup` containing core engine features like 2D / 3D renderer, asset loading, UI System, Windows, and input
   - Using this adds an "event loop" that runs once per frame
+
+## Handling Movement In Bevy
+
+### Transform
+
+- contains translation, rotation, and scale
+- `Translation::default()` uses the Identity matrix values
+
+## Rotation
+
+- use `rotation.normalize()` to normalize the angle

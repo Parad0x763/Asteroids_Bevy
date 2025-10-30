@@ -15,6 +15,12 @@ pub struct MovementPhysics {
 }
 
 #[derive(Debug, Component, Clone, Copy, PartialEq, Default, /*Deref, DerefMut*/)]
+pub struct HealthComponent {
+    pub max_health: f32,
+    pub current_health: f32,
+}
+
+#[derive(Debug, Component, Clone, Copy, PartialEq, Default, /*Deref, DerefMut*/)]
 pub struct Turret;
 
 #[derive(Debug, Component, Clone, Copy, PartialEq, Default, /*Deref, DerefMut*/)]
