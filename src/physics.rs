@@ -1,10 +1,6 @@
-use bevy::ecs::query;
-use bevy::ecs::system::IntoResult;
-use bevy::{math::ops, prelude::*};
+use bevy::prelude::*;
 
 use crate::components::MovementPhysics;
-use crate::Velocity;
-use crate::AccumulatedInput;
 use crate::Player;
 
 const BOUNDS: Vec2 = Vec2::new(1280.0, 720.0);
@@ -14,7 +10,7 @@ const MOVEMENT_FACTOR: f32 = 1.0;
 pub fn player_movement(
     time: Res<Time>,
     keyboard_input: Res<ButtonInput<KeyCode>>,
-    player: Single<(&mut Transform, &mut MovementPhysics), With<Player>>,
+    player: Single<(&mut Transform, &MovementPhysics), With<Player>>,
 ) {
    let (mut transform, ship) = player.into_inner();
 
@@ -47,9 +43,9 @@ pub fn player_movement(
 }
 
 pub fn adjust_entity_to_bounds(
-     mut query: Query<(&mut Transform, &Velocity)>
+     mut query: Query<&mut Transform>
 ) {
-     for (mut transform, _) in &mut query {
+     for mut transform in &mut query {
           if transform.translation.x > BOUNDS.x / 2.0 {
                transform.translation.x -= BOUNDS.x;
           }

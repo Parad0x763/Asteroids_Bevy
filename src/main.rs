@@ -1,21 +1,19 @@
 use bevy::{color::palettes::tailwind, prelude::*};
-
 use bevy_rand::prelude::{EntropyPlugin, WyRand};
+use std::time::Duration;
 
 mod components;
 mod physics;
 mod create_asteroids_plugin;
-use std::time::Duration;
+mod handle_turret_plugin;
 
-use crate::components::MovementPhysics;
-use crate::components::PhysicalTranslation;
-use crate::components::PreviousPhysicalTranslation;
-use crate::components::Velocity;
-use crate::components::AccumulatedInput;
-use crate::components::Player;
-use crate::components::DidFixedTimestepRunThisFrame;
+use crate::components::{AccumulatedInput, DidFixedTimestepRunThisFrame, HealthComponent, MovementPhysics, PhysicalTranslation, Player, PreviousPhysicalTranslation, Velocity};
 use crate::physics::{adjust_entity_to_bounds, player_movement};
 use crate::create_asteroids_plugin::AsteroidCreatePlugin;
+use crate::handle_turret_plugin::{TurretShotPlugin};
+
+const PLAYER_HEALTH: f32 = 100.0;
+const PLAYER_SPEED: f32 = 350.0;
 
 fn main() {
     App::new()
@@ -33,8 +31,8 @@ fn main() {
                 ..default()}),
             AsteroidCreatePlugin {
                 wait_duration: Duration::from_secs(1),
-                message: "Created".to_string(),
-            }
+            },
+            TurretShotPlugin
         ))
         .add_systems(Startup, setup)
         .add_systems(PreUpdate, clear_fixed_timestep_flag)
@@ -52,11 +50,15 @@ fn setup(
     commands.spawn((
         Player,
         MovementPhysics {
-            movement_speed: 500.0,                  // Meters per second
-            rotation_speed: f32::to_radians(360.0), // Degress per second
+            movement_speed: PLAYER_SPEED,               // Meters per second
+            rotation_speed: f32::to_radians(360.0),     // Degrees per second
+        },
+        HealthComponent {
+            current_health: PLAYER_HEALTH,
+            max_health: PLAYER_HEALTH,
         },
         Sprite::from_image(asset_server.load("ship/ship.png")),
-        Transform::from_xyz(0.0, 0.0, 0.0),
+        Transform::default(),
         AccumulatedInput::default(),
         Velocity::default(),
         PhysicalTranslation::default(),
