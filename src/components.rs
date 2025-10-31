@@ -1,5 +1,7 @@
 use bevy::{prelude::*};
 
+pub const SPAWN_PROTECTION_MS: u64 = 150;
+
 #[derive(Debug, Component)]
 pub struct Player;
 
@@ -18,6 +20,12 @@ pub struct MovementPhysics {
 pub struct HealthComponent {
     pub max_health: f32,
     pub current_health: f32,
+}
+
+#[derive(Debug, Component, Clone, PartialEq, Default)]
+pub struct Respawnable {
+    pub number_of_lives: u32,
+    pub spawn_protection: Timer,
 }
 
 #[derive(Debug, Component, Clone, Copy, PartialEq, Default, /*Deref, DerefMut*/)]

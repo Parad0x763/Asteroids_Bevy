@@ -8,7 +8,7 @@ mod create_asteroids_plugin;
 mod handle_turret_plugin;
 mod collision;
 
-use crate::components::{AccumulatedInput, DidFixedTimestepRunThisFrame, HealthComponent, MovementPhysics, PhysicalTranslation, Player, PreviousPhysicalTranslation, Velocity};
+use crate::components::{SPAWN_PROTECTION_MS, AccumulatedInput, DidFixedTimestepRunThisFrame, Respawnable, MovementPhysics, PhysicalTranslation, Player, PreviousPhysicalTranslation, Velocity};
 use crate::{physics::{adjust_entity_to_bounds, player_movement}, create_asteroids_plugin::AsteroidCreatePlugin, handle_turret_plugin::{TurretShotPlugin}, collision::CollisionPlugin};
 
 const PLAYER_SPEED: f32 = 350.0;
@@ -36,7 +36,7 @@ fn main() {
         .add_systems(Startup, setup)
         .add_systems(PreUpdate, clear_fixed_timestep_flag)
         .add_systems(FixedPreUpdate, set_fixed_time_step_flag)
-        .add_systems(FixedUpdate, (player_movement, adjust_entity_to_bounds))
+        .add_systems(FixedUpdate, (player_movement, adjust_entity_to_bounds, tick_respawnable))
         .run();
 }
 
@@ -52,6 +52,10 @@ fn setup(
             movement_speed: PLAYER_SPEED,               // Meters per second
             rotation_speed: f32::to_radians(360.0),     // Degrees per second
         },
+        Respawnable {
+            number_of_lives: 3,
+            spawn_protection: Timer::new(Duration::from_millis(SPAWN_PROTECTION_MS), TimerMode::Once),
+        },
         Sprite::from_image(asset_server.load("ship/ship.png")),
         Transform::default(),
         AccumulatedInput::default(),
@@ -59,6 +63,12 @@ fn setup(
         PhysicalTranslation::default(),
         PreviousPhysicalTranslation::default(),
     ));
+}
+
+fn tick_respawnable(time: Res<Time>, mut query: Query<&mut Respawnable>) {
+    for mut respawnable in query.iter_mut() {
+        respawnable.spawn_protection.tick(time.delta());
+    }
 }
 
 // GAME TIME FUNCTIONS
