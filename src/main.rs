@@ -2,6 +2,7 @@ use bevy::{color::palettes::tailwind, prelude::*};
 use bevy_rand::prelude::{EntropyPlugin, WyRand};
 use std::time::Duration;
 
+mod sprite_paths;
 mod components;
 mod physics;
 mod create_asteroids_plugin;
@@ -9,7 +10,7 @@ mod handle_turret_plugin;
 mod collision;
 
 use crate::components::{SPAWN_PROTECTION_MS, AccumulatedInput, DidFixedTimestepRunThisFrame, Respawnable, MovementPhysics, PhysicalTranslation, Player, PreviousPhysicalTranslation, Velocity};
-use crate::{physics::{adjust_entity_to_bounds, player_movement}, create_asteroids_plugin::AsteroidCreatePlugin, handle_turret_plugin::{TurretShotPlugin}, collision::CollisionPlugin};
+use crate::{physics::{adjust_entity_to_bounds, player_movement}, create_asteroids_plugin::AsteroidCreatePlugin, handle_turret_plugin::{TurretShotPlugin}, collision::CollisionPlugin, sprite_paths::{SHIP_SPRITE_PATH}};
 
 const PLAYER_SPEED: f32 = 350.0;
 
@@ -56,7 +57,7 @@ fn setup(
             number_of_lives: 3,
             spawn_protection: Timer::new(Duration::from_millis(SPAWN_PROTECTION_MS), TimerMode::Once),
         },
-        Sprite::from_image(asset_server.load("ship/ship.png")),
+        Sprite::from_image(asset_server.load(SHIP_SPRITE_PATH)),
         Transform::default(),
         AccumulatedInput::default(),
         Velocity::default(),
