@@ -2,6 +2,20 @@ use bevy::{prelude::*};
 
 pub const SPAWN_PROTECTION_MS: u64 = 150;
 
+// Scoreboard settings
+pub const SCOREBOARD_FONT_SIZE: f32 = 28.0;
+pub const SCOREBOARD_TEXT_PADDING: Val = Val::Px(5.0);
+pub const TEXT_COLOR: Color = Color::srgb(0.5, 0.5, 1.0);
+pub const SCORE_COLOR: Color = Color::srgb(1.0, 0.5, 0.5);
+pub const SCORE_LABEL_TEXT: &str = "Score: ";
+pub const DESTROY_ASTEROID_SCORE: u32 = 50;
+
+#[derive(Resource, Deref, DerefMut)]
+pub struct Score(pub u32);
+
+#[derive(Component)]
+pub struct ScoreboardUi;
+
 #[derive(Debug, Component)]
 pub struct Player;
 
