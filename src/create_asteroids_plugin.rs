@@ -5,7 +5,7 @@ use bevy_rand::prelude::{WyRand, GlobalRng};
 use core::time::Duration;
 
 use crate::components::{Asteroid, Velocity};
-use crate::{PreviousPhysicalTranslation, PhysicalTranslation, MovementPhysics};
+use crate::{PreviousPhysicalTranslation, PhysicalTranslation, MovementPhysics, sprite_paths::ASTEROID_SPRITE_PATH};
 
 /// Asteroid Creation Plugin
 pub struct AsteroidCreatePlugin {
@@ -55,7 +55,7 @@ pub fn spawn_more_asteroids(
                 movement_speed: movement_speed_rng,                  // Meters per second
                 rotation_speed: f32::to_radians(rotation_speed_rng), // Degress per second
             },
-            Sprite::from_image(asset_server.load("asteroid/asteroid2.png")),
+            Sprite::from_image(asset_server.load(ASTEROID_SPRITE_PATH)),
             Transform::from_xyz(transform_x_rng, transform_y_rng, 0.0),
             Velocity(Vec3 { x: velocity_x_rng, y: velocity_y_rng, z: 0.0 }),
             PhysicalTranslation::default(),

@@ -1,7 +1,7 @@
 use bevy::{app::{App, Plugin}, ecs::{system::Commands}, prelude::*};
 
 use crate::components::{HealthComponent, MovementPhysics, Player, Turret, Velocity};
-use crate::{PhysicalTranslation, PreviousPhysicalTranslation};
+use crate::{PhysicalTranslation, PreviousPhysicalTranslation, sprite_paths::SHOT_SPRITE_PATH};
 
 const SHOT_HEALTH: f32 = 1.0;
 const SHOT_SPEED: f32 = 1000.0;
@@ -43,7 +43,7 @@ pub fn spawn_turret_shot(
             },
             PhysicalTranslation(transform.translation.into()),
             PreviousPhysicalTranslation(transform.translation.into()),
-            Sprite::from_image(asset_server.load("turret/shot.png"))
+            Sprite::from_image(asset_server.load(SHOT_SPRITE_PATH))
         ));
     }
 }
