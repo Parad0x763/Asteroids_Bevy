@@ -1,9 +1,9 @@
 use bevy::{
-    math::bounding::{Aabb2d, BoundingCircle, IntersectsVolume},
+    math::{bounding::{Aabb2d, BoundingCircle, IntersectsVolume}},
     prelude::*,
 };
 
-use crate::{Player, components::{Asteroid, Turret}};
+use crate::{Duration, Player, components::{Asteroid, Respawnable, SPAWN_PROTECTION_MS, Turret}};
 
 pub struct CollisionPlugin;
 
@@ -18,11 +18,11 @@ impl Plugin for CollisionPlugin {
 
 pub fn check_for_collisions(
     mut commands: Commands,
-    player: Single<(Entity, &Transform), (With<Player>, Without<Asteroid>, Without<Turret>)>,
+    player: Single<(Entity, &mut Transform, &mut Respawnable), (With<Player>, Without<Asteroid>, Without<Turret>)>,
     shots: Query<(Entity, &Transform), (With<Turret>, Without<Asteroid>, Without<Player>)>,
     asteroids: Query<(Entity, &Transform), (With<Asteroid>, Without<Turret>, Without<Player>)>,
 ) {
-    let (p_entity, p_transform) = player.into_inner();
+    let (p_entity, mut p_transform, mut p_respawn) = player.into_inner();
     
     for (a_entity, a_transform) in asteroids.iter() {
         let b_player_collision: bool = has_collided(
@@ -33,8 +33,18 @@ pub fn check_for_collisions(
             )
         );
         
-        if b_player_collision {            
-            commands.entity(p_entity).despawn();
+        if b_player_collision {
+            if p_respawn.spawn_protection.is_finished() {
+                p_respawn.number_of_lives -= 1;
+                
+                if p_respawn.number_of_lives < 1 {
+                    commands.entity(p_entity).despawn();
+                } else {
+                    p_transform.translation = Vec3::ZERO;
+                    p_transform.rotation = Quat::IDENTITY;
+                    p_respawn.spawn_protection = Timer::new(Duration::from_millis(SPAWN_PROTECTION_MS), TimerMode::Once);
+                }
+            }
             commands.entity(a_entity).despawn();
         }
         
