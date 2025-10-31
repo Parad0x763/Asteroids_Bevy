@@ -3,7 +3,7 @@ use bevy::{
     prelude::*,
 };
 
-use crate::{Duration, Player, components::{Asteroid, Respawnable, SPAWN_PROTECTION_MS, Turret}};
+use crate::{Duration, Player, components::{Asteroid, DESTROY_ASTEROID_SCORE, Respawnable, SPAWN_PROTECTION_MS, Score, Turret}};
 
 pub struct CollisionPlugin;
 
@@ -18,6 +18,7 @@ impl Plugin for CollisionPlugin {
 
 pub fn check_for_collisions(
     mut commands: Commands,
+    mut score: ResMut<Score>,
     player: Single<(Entity, &mut Transform, &mut Respawnable), (With<Player>, Without<Asteroid>, Without<Turret>)>,
     shots: Query<(Entity, &Transform), (With<Turret>, Without<Asteroid>, Without<Player>)>,
     asteroids: Query<(Entity, &Transform), (With<Asteroid>, Without<Turret>, Without<Player>)>,
@@ -60,6 +61,7 @@ pub fn check_for_collisions(
             if b_shot_collision {
                 commands.entity(s_entity).despawn();
                 commands.entity(a_entity).despawn();
+                **score += DESTROY_ASTEROID_SCORE;
             }
         }
     }

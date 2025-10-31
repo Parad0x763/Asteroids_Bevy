@@ -8,9 +8,10 @@ mod physics;
 mod create_asteroids_plugin;
 mod handle_turret_plugin;
 mod collision;
+mod score_plugin;
 
 use crate::components::{SPAWN_PROTECTION_MS, AccumulatedInput, DidFixedTimestepRunThisFrame, Respawnable, MovementPhysics, PhysicalTranslation, Player, PreviousPhysicalTranslation, Velocity};
-use crate::{physics::{adjust_entity_to_bounds, player_movement}, create_asteroids_plugin::AsteroidCreatePlugin, handle_turret_plugin::{TurretShotPlugin}, collision::CollisionPlugin, sprite_paths::{SHIP_SPRITE_PATH}};
+use crate::{physics::{adjust_entity_to_bounds, player_movement}, create_asteroids_plugin::AsteroidCreatePlugin, handle_turret_plugin::{TurretShotPlugin}, collision::CollisionPlugin, score_plugin::ScorePlugin, sprite_paths::{SHIP_SPRITE_PATH}};
 
 const PLAYER_SPEED: f32 = 350.0;
 
@@ -33,6 +34,7 @@ fn main() {
             },
             TurretShotPlugin,
             CollisionPlugin,
+            ScorePlugin,
         ))
         .add_systems(Startup, setup)
         .add_systems(PreUpdate, clear_fixed_timestep_flag)
