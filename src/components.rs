@@ -1,4 +1,4 @@
-use bevy::{prelude::*};
+use bevy::{prelude::{Color, Val, Resource, Deref, DerefMut, Component, Timer, Vec2, Vec3}, ecs::event::Event};
 
 pub const SPAWN_PROTECTION_MS: u64 = 150;
 
@@ -21,6 +21,9 @@ pub struct Player;
 
 #[derive(Debug, Component, Clone, Copy, PartialEq, Default, /*Deref, DerefMut*/)]
 pub struct Asteroid;
+
+#[derive(Event)]
+pub struct PlayerDied;
 
 #[derive(Debug, Component, Clone, Copy, PartialEq, Default, /*Deref, DerefMut*/)]
 pub struct MovementPhysics {

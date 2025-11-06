@@ -1,4 +1,4 @@
-use bevy::{color::palettes::tailwind, prelude::*};
+use bevy::{color::palettes::tailwind, prelude::*, window::{WindowRef, WindowResolution}};
 use bevy_rand::prelude::{EntropyPlugin, WyRand};
 use std::time::Duration;
 
@@ -9,9 +9,12 @@ mod create_asteroids_plugin;
 mod handle_turret_plugin;
 mod collision;
 mod score_plugin;
+mod rusqlite_database;
+mod input_box;
 
 use crate::components::{SPAWN_PROTECTION_MS, AccumulatedInput, DidFixedTimestepRunThisFrame, Respawnable, MovementPhysics, PhysicalTranslation, Player, PreviousPhysicalTranslation, Velocity};
-use crate::{physics::{adjust_entity_to_bounds, player_movement}, create_asteroids_plugin::AsteroidCreatePlugin, handle_turret_plugin::{TurretShotPlugin}, collision::CollisionPlugin, score_plugin::ScorePlugin, sprite_paths::{SHIP_SPRITE_PATH}};
+use crate::rusqlite_database::create_db_if_not_exists;
+use crate::{physics::{adjust_entity_to_bounds, player_movement}, create_asteroids_plugin::AsteroidCreatePlugin, handle_turret_plugin::{TurretShotPlugin}, collision::CollisionPlugin, score_plugin::ScorePlugin, sprite_paths::{SHIP_SPRITE_PATH}, input_box::InputBoxPlugin};
 
 const PLAYER_SPEED: f32 = 350.0;
 
@@ -23,7 +26,7 @@ fn main() {
         .add_plugins((
             DefaultPlugins.set(WindowPlugin{
                 primary_window: Some(Window{
-                    title: "Asteroids".into(),
+                    title: "Asteroids".to_owned(),
                     name: Some("bevy.app".into()),
                     resolution: (1280, 720).into(), // older versions of Bevy used f32, now u32 is used
                     ..default()
@@ -35,6 +38,7 @@ fn main() {
             TurretShotPlugin,
             CollisionPlugin,
             ScorePlugin,
+            InputBoxPlugin,
         ))
         .add_systems(Startup, setup)
         .add_systems(PreUpdate, clear_fixed_timestep_flag)
@@ -47,6 +51,9 @@ fn setup(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
 ) {
+    // Initialize database
+    let _ = create_db_if_not_exists();
+
     commands.spawn(Camera2d);
 
     commands.spawn((
