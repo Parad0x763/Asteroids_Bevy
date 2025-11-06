@@ -4,7 +4,7 @@ use bevy::prelude::*;
 use bevy_rand::prelude::{WyRand, GlobalRng};
 use core::time::Duration;
 
-use crate::components::{Asteroid, Velocity};
+use crate::components::{Asteroid, Velocity, PlayerDied};
 use crate::{PreviousPhysicalTranslation, PhysicalTranslation, MovementPhysics, sprite_paths::ASTEROID_SPRITE_PATH};
 
 /// Asteroid Creation Plugin
@@ -18,17 +18,24 @@ impl Plugin for AsteroidCreatePlugin {
     fn build(&self, app: &mut App) {
         let state: AsteroidCreateState = AsteroidCreateState {
             timer: Timer::new(self.wait_duration, TimerMode::Repeating),
+            can_spawn_asteroids: true,
         };
         app
             .insert_resource(state)
-            .add_systems(Update, spawn_more_asteroids)
-            .add_systems(FixedUpdate, update_movement);
+            .add_systems(Update, spawn_more_asteroids.run_if(can_spawn_asteroids))
+            .add_systems(FixedUpdate, update_movement)
+            .add_observer(remove_asteroids_on_player_death);
     }
 }
 
 #[derive(Resource)]
 pub struct AsteroidCreateState {
     pub timer: Timer,
+    pub can_spawn_asteroids: bool,
+}
+
+fn can_spawn_asteroids(state: Res<AsteroidCreateState>) -> bool {
+    return state.can_spawn_asteroids;
 }
 
 pub fn spawn_more_asteroids(
@@ -67,5 +74,17 @@ pub fn spawn_more_asteroids(
 fn update_movement(mut query: Query<(&mut Transform, &Velocity), With<Asteroid>>, time: Res<Time>) {
     for (mut transform, velocity) in query.iter_mut() {
         transform.translation += velocity.0 * time.delta_secs();
+    }
+}
+
+fn remove_asteroids_on_player_death(
+    _player_died: On<PlayerDied>,
+    mut commands: Commands,
+    mut query: Query<Entity, With<Asteroid>>,
+    mut state: ResMut<AsteroidCreateState>,
+) {
+    state.can_spawn_asteroids = false;
+    for a_entity in query.iter_mut() {
+        commands.entity(a_entity).despawn();
     }
 }
