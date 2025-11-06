@@ -3,7 +3,7 @@ use bevy::{
     prelude::*,
 };
 
-use crate::{Duration, Player, components::{Asteroid, DESTROY_ASTEROID_SCORE, Respawnable, SPAWN_PROTECTION_MS, Score, Turret}};
+use crate::{Duration, Player, components::{PlayerDied, Asteroid, DESTROY_ASTEROID_SCORE, Respawnable, SPAWN_PROTECTION_MS, Score, Turret}};
 
 pub struct CollisionPlugin;
 
@@ -12,7 +12,8 @@ const SPRITE_CENTER_FACTOR: f32 = 2.0;
 
 impl Plugin for CollisionPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(FixedUpdate, check_for_collisions);
+        app
+            .add_systems(FixedUpdate, check_for_collisions);
     }
 }
 
@@ -40,6 +41,7 @@ pub fn check_for_collisions(
                 
                 if p_respawn.number_of_lives < 1 {
                     commands.entity(p_entity).despawn();
+                    commands.trigger(PlayerDied);
                 } else {
                     p_transform.translation = Vec3::ZERO;
                     p_transform.rotation = Quat::IDENTITY;

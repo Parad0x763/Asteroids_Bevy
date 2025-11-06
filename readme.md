@@ -17,6 +17,9 @@ TODO: Need to add health the entities
 - [2d-rendering/rotation](https://bevy.org/examples/2d-rendering/rotation/)
 - [bevy_rand/Tutorial](https://docs.rs/bevy_rand/latest/bevy_rand/)
 - [bevy/games/breakout](https://bevy.org/examples/games/breakout/)
+- [bevy/multi_window_text](https://github.com/bevyengine/bevy/blob/main/examples/window/multi_window_text.rs)
+- [bevy/multiple_windows](https://github.com/bevyengine/bevy/blob/main/examples/window/multiple_windows.rs)
+- [bevy/text_input](https://github.com/bevyengine/bevy/blob/main/examples/input/text_input.rs)
 
 ### ECS Quick Start
 
